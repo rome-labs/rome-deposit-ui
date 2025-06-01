@@ -1,0 +1,40 @@
+name: Build Deposit UI Docker image
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout rome-deposit-ui repository'
+        uses: actions/checkout@main
+        with:
+          repository: rome-labs/rome-deposit-ui
+          path: rome-deposit-ui
+          ref: ${{github.ref_name}}
+          token: ${{ secrets.GIT_ROLLUP_TOKEN }}
+    
+      - name: 'Login to Docker Hub'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: 'Build rome-deposit-ui image'
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: .
+          push: true
+          file: rome-deposit-ui/Dockerfile
+          tags: romelabs/rome-deposit-ui:${{github.ref_name}}
+          labels: romelabs/rome-deposit-ui:${{github.ref_name}}
+
+      - name: 'Set latest tag'
+        if: ${{github.ref_name == 'main'}}
+        run: |
+          docker pull romelabs/rome-deposit-ui:${{github.ref_name}}
+          docker tag romelabs/rome-deposit-ui:${{github.ref_name}} romelabs/rome-deposit-ui:latest
+          docker push romelabs/rome-deposit-ui:latest
+    
