@@ -19,6 +19,17 @@ export const Sidebar = () => {
           Transfer
         </button>
       </Link>
+      <Link href="/swap">
+        <button
+          type="button"
+          className={clsx(
+            "w-full rounded-xl px-8 py-3 text-left cursor-pointer hover:shadow-menu",
+            pathname == "/swap" && "shadow-menu"
+          )}
+        >
+          Swap
+        </button>
+      </Link>
       <div className="w-full bg-gray h-[1px]" />
 
       <Link href="https://discord.gg/romeprotocol" target="_blank">

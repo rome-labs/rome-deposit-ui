@@ -32,13 +32,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
     []
   );
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 300_000,
-      },
-    },
-  });
+  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

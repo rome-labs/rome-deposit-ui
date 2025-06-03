@@ -12,7 +12,23 @@ NEXT_PUBLIC_SOLANA_RPC_URL = "https://api.devnet.solana.com/"
 NEXT_PUBLIC_ROLLUP_PROGRAM = "RTMvcqiZSbm57DaDewt8H4FShWFJBTQscfKLAT4PfDa"
 ```
 
-### 2. Development Setup
+### 2. Setup L2 chains
+
+Copy chains-template.yaml and modify contents to chains.yaml
+
+```env
+- name: "FooSol"
+  chainId: "100001"
+  rpcUrl: "https://foosol.devnet.romeprotocol.xyz"
+  explorerUrl: "https://foosol.devnet.romeprotocol.xyz:1000"
+  contracts:
+    uniswapV2Factory: "0x54C4C8eFe05EA40c0de1ef2608aDf32A3C2e019c"
+    uniswapV2Router: "0x44c256191409A855b66f609676818b537Fd0b86e"
+    weth: "0x33932D72AA77E1De7cB173bB88C46080c731Dd39"
+    multicall: "0x54C4C8eFe05EA40c0de1ef2608aDf32A3C2e019c"
+```
+
+### 3. Development Setup
 
 ```bash
 # Fix permissions if needed
@@ -31,7 +47,7 @@ The app will be available at:
 - Local: http://localhost:3000
 - Network: http://your-ip:3000
 
-### 3. Docker Build & Run
+### 4. Docker Build & Run
 
 There are three ways to run the Docker container with environment variables:
 

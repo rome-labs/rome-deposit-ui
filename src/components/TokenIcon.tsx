@@ -1,4 +1,5 @@
 import { Token } from "@/constants/tokens";
+import Image from "next/image";
 
 interface TokenIconProps {
   token: string | Token;
@@ -11,7 +12,7 @@ export const TokenIcon = ({ token, size = 24 }: TokenIconProps) => {
     typeof token === "string" ? `/images/tokens/${symbol}.png` : token.logoURI;
 
   if (logoURI) {
-    return <img src={logoURI} alt={symbol} width={size} height={size} />;
+    return <Image src={logoURI} alt={symbol} width={size} height={size} />;
   }
 
   return (

@@ -201,10 +201,9 @@ export const Withdraw = () => {
         </div>
 
         <div className="flex justify-between gap-4 items-center">
-          <TokenIcon token={"rome"} />
+          <TokenIcon token={"rsol"} />
           <p className="text-sm text-gray-800">
-            Balance: {rsolBalance ? formatUnits(rsolBalance?.value, 18) : "-"}{" "}
-            rSOL
+            Balance: {rsolBalance ? formatUnits(rsolBalance.value, 18) : "-"} rSOL
           </p>
         </div>
       </div>
@@ -230,7 +229,7 @@ export const Withdraw = () => {
         <div className="flex justify-between gap-4 items-center">
           <TokenIcon token={"sol"} />
           <p className="text-sm text-gray-800">
-            Balance: {destBalance ?? "-"} SOL
+            Balance: {destBalance ? destBalance.toFixed(2) : "-"} SOL
           </p>
         </div>
       </div>

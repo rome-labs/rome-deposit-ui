@@ -1,21 +1,20 @@
 import { Chain } from "@rainbow-me/rainbowkit";
-import { L2_CHAIN_ID, L2_CHAIN_NAME, L2_EXPLORER_URL, L2_RPC_URL } from ".";
+import chainsData from "../../chains.yaml";
 
 export type RomeChain = {
   name: string;
   chainId: string;
   rpcUrl: string;
   explorerUrl?: string;
+  contracts: {
+    uniswapV2Factory: string;
+    uniswapV2Router: string;
+    weth: string;
+    multicall: string;
+  };
 };
 
-export const L2_CHAINS: RomeChain[] = [
-  {
-    name: L2_CHAIN_NAME,
-    chainId: L2_CHAIN_ID,
-    rpcUrl: L2_RPC_URL,
-    explorerUrl: L2_EXPLORER_URL,
-  },
-];
+export const L2_CHAINS: RomeChain[] = chainsData as RomeChain[];
 
 export const createCustomChain = (
   chainId: string,

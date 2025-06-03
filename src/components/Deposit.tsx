@@ -189,11 +189,9 @@ export const Deposit = () => {
 
         <div className="flex justify-between gap-4 items-center">
           <TokenIcon token={"sol"} />
-          {publicKey && (
-            <p className="text-sm text-gray-800">
-              Balance: {solBalance.toFixed(2)} SOL
-            </p>
-          )}
+          <p className="text-sm text-gray-800">
+            Balance: {solBalance ? solBalance.toFixed(2) : "-"} SOL
+          </p>
         </div>
       </div>
 
@@ -215,12 +213,10 @@ export const Deposit = () => {
         )}
 
         <div className="flex justify-between gap-4 items-center">
-          <TokenIcon token={"rome"} />
+          <TokenIcon token={"rsol"} />
+
           <p className="text-sm text-gray-800">
-            Balance:{" "}
-            {destBalance
-              ? `${formatUnits(destBalance.value, 18)} ${destBalance.symbol}`
-              : "0 rSOL"}
+            Balance: {destBalance ? formatUnits(destBalance.value, 18) : "-"} rSOL
           </p>
         </div>
       </div>
