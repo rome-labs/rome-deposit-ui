@@ -16,18 +16,18 @@ export const Sidebar = () => {
             pathname == "/" && "shadow-menu"
           )}
         >
-          Transfer
+          Deposit
         </button>
       </Link>
-      <Link href="/swap">
+      <Link href="/withdraw">
         <button
           type="button"
           className={clsx(
             "w-full rounded-xl px-8 py-3 text-left cursor-pointer hover:shadow-menu",
-            pathname == "/swap" && "shadow-menu"
+            pathname == "/withdraw" && "shadow-menu"
           )}
         >
-          Swap
+          Withdraw
         </button>
       </Link>
       <div className="w-full bg-gray h-[1px]" />

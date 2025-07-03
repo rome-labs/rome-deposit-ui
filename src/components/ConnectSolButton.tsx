@@ -16,10 +16,10 @@ export const ConnectSolButton = () => {
   return (
     <button
       type="button"
-      className="shadow-btn bg-white rounded-2xl px-3 py-1.5 flex items-center cursor-pointer gap-2 text-sm text-primary hover:scale-105 justify-center"
+      className="shadow-btn bg-white rounded-full px-7 py-4 cursor-pointer hover:font-semibold w-56 text-black text-center"
       onClick={handleConnect}
     >
-      {publicKey ? "Disconnect" : "Connect Wallet"}
+      {publicKey ? "Connected" : "Connect Wallet (SOL)"}
     </button>
   );
 };

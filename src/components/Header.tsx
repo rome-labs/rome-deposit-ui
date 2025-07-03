@@ -4,7 +4,6 @@ import { ChainModal } from "@/components/ChainModal";
 import { useChainStore } from "@/store/chainStore";
 import { L2_CHAINS } from "@/constants/chains";
 import { ChevronDownIcon, Bars3Icon } from "@heroicons/react/20/solid";
-import { ConnectButton } from "@/components/ConnectButton";
 import { MobileSidebar } from "./MobileSidebar";
 
 export const Header = () => {
@@ -17,7 +16,7 @@ export const Header = () => {
     "Select Chain";
 
   return (
-    <div className="absolute top-0 left-0 right-0 bg-white z-[100]">
+    <div className="absolute top-0 left-0 right-0 bg-white z-40">
       <div className="flex w-full items-center justify-between gap-8">
         <div className="flex items-center justify-start">
           <Image
@@ -38,7 +37,6 @@ export const Header = () => {
             <span>{selectedChainName}</span>
             <ChevronDownIcon className="size-5" />
           </button>
-          <ConnectButton />
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="lg:hidden p-2 cursor-pointer hover:font-semibold text-black text-center"

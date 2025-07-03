@@ -9,20 +9,23 @@ import {
   useBalance,
   useWriteContract,
   useWaitForTransactionReceipt,
+  useDisconnect,
 } from "wagmi";
 import { ConnectSolButton } from "@/components/ConnectSolButton";
+import { ConnectButton } from "@/components/ConnectButton";
 import { bytesToHex, encodeFunctionData, parseGwei } from "viem";
-import { Toggler } from "./Toggler";
 import useSolBalance from "@/hooks/useSolBalance";
 import { TokenIcon } from "./TokenIcon";
 import Link from "next/link";
 import { useChainStore } from "@/store/chainStore";
 import { L2_CHAINS } from "@/constants/chains";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { ArrowDown } from "./ArrowDown";
 
 export const Withdraw = () => {
-  const { publicKey } = useWallet();
+  const { publicKey, disconnect: disconnectSol } = useWallet();
   const { address } = useAccount();
+  const { disconnect: disconnectEvm } = useDisconnect();
   const { data: hash, writeContractAsync } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
@@ -184,6 +187,15 @@ export const Withdraw = () => {
       <div className="border border-gray p-8 rounded-2xl text-black bg-white min-h-96 flex flex-col gap-4 justify-between">
         <div className="w-full flex justify-between items-center gap-4">
           <span className="text-base">You&apos;re sending</span>
+          {address && (
+            <button
+              type="button"
+              className="text-sm text-gray-500 hover:text-black"
+              onClick={() => disconnectEvm()}
+            >
+              Disconnect
+            </button>
+          )}
         </div>
 
         <div className="w-full text-center">
@@ -208,12 +220,20 @@ export const Withdraw = () => {
         </div>
       </div>
 
-      <Toggler />
+      <ArrowDown />
 
       <div className="border border-gray p-8 rounded-2xl text-black bg-white flex flex-col gap-4 justify-between">
         <div className="w-full flex justify-between items-center gap-4">
-          <span className="text-base">You&apos;re depositing</span>
-          <ConnectSolButton />
+          <span className="text-base">You&apos;re receiving</span>
+          {publicKey && (
+            <button
+              type="button"
+              className="text-sm text-gray-500 hover:text-black"
+              onClick={() => disconnectSol()}
+            >
+              Disconnect
+            </button>
+          )}
         </div>
 
         {recipient && (
@@ -234,18 +254,32 @@ export const Withdraw = () => {
         </div>
       </div>
 
-      <button
-        type="button"
-        className="shadow-btn bg-white rounded-full px-7 py-4 cursor-pointer hover:font-semibold w-56 text-black text-center mx-auto mt-6"
-        onClick={handleTransfer}
-        disabled={isProcessing || isConfirming}
-      >
-        {isProcessing
-          ? "Transferring..."
-          : isConfirming
-          ? "Confirming..."
-          : "Transfer"}
-      </button>
+      {address ? (
+        <>
+          {publicKey ? (
+            <button
+              type="button"
+              className="shadow-btn bg-white rounded-full px-7 py-4 cursor-pointer hover:font-semibold w-56 text-black text-center mx-auto mt-6"
+              onClick={handleTransfer}
+              disabled={isProcessing || isConfirming}
+            >
+              {isProcessing
+                ? "Transferring..."
+                : isConfirming
+                ? "Confirming..."
+                : "Transfer"}
+            </button>
+          ) : (
+            <div className="mx-auto mt-6">
+              <ConnectSolButton />
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="mx-auto mt-6">
+          <ConnectButton />
+        </div>
+      )}
     </div>
   );
 };

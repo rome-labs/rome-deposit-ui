@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { L2_CHAINS } from "@/constants/chains";
 import { Config } from "wagmi";
 import { createWagmiConfig } from "@/providers/WagmiConfig";
+import { clearRainbowKitCache } from "@/utils/wallet";
 
 interface ChainState {
   selectedChainId: string;
@@ -22,11 +23,16 @@ export const useChainStore = create<ChainState>((set) => ({
   setSelectedChainId: (chainId) => set({ selectedChainId: chainId }),
   setChain: (chainId) => {
     set({ chainId });
+    // Clear cache when changing chains
+    clearRainbowKitCache();
   },
-  resetChain: () =>
+  resetChain: () => {
     set({
       chainId: L2_CHAINS[0].chainId,
-    }),
+    });
+    // Clear cache when resetting chain
+    clearRainbowKitCache();
+  },
 
   wagmiConfig: createWagmiConfig(L2_CHAINS[0].chainId),
   setWagmiConfig: (wagmiConfig) => set({ wagmiConfig }),

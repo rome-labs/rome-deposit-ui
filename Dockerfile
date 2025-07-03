@@ -17,10 +17,10 @@ WORKDIR /app
 # COPY package.json yarn.lock ./
 
 # Copy all other files
-COPY ./rome-deposit-ui .
+COPY . .
 
 # Install Node dependencies
-RUN yarn install
+RUN yarn install --ignore-engines
 
 # RUN yarn build
 # # Copy all other files

@@ -4,7 +4,7 @@ import { L2_CHAINS } from "@/constants/chains";
 import { useChainStore } from "@/store/chainStore";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { toast } from "react-toastify";
 import { createWagmiConfig } from "@/providers/WagmiConfig";
 import { clearRainbowKitCache } from "@/utils/wallet";
@@ -18,25 +18,36 @@ export const ChainModal = ({ isOpen, onClose }: ChainModalProps) => {
   const { selectedChainId, setSelectedChainId, setChain, setWagmiConfig } =
     useChainStore();
   const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { switchChain } = useSwitchChain();
 
   const handleChainSelect = async (chainId: string) => {
-    setSelectedChainId(chainId);
     const chain = L2_CHAINS.find((chain) => chain.chainId === chainId);
     if (chain) {
-      setChain(chain.chainId);
+      try {
+        // Update chain selection
+        setSelectedChainId(chainId);
+        setChain(chain.chainId);
 
-      // If wallet is connected, update wagmi config and reconnect
-      if (isConnected) {
-        try {
-          // Update wagmi config with new chain
-          setWagmiConfig(createWagmiConfig(chain.chainId));
+        // Update wagmi config with new chain
+        setWagmiConfig(createWagmiConfig(chain.chainId));
 
-          // Clear RainbowKit cache
-          clearRainbowKitCache();
-        } catch (error) {
-          toast.error("Failed to switch chain. Please try again.");
-          console.error("Failed to switch chain:", error);
+        // If wallet is connected, try to switch chain
+        if (isConnected) {
+          try {
+            await switchChain({ chainId: Number(chain.chainId) });
+          } catch (error) {
+            console.error("Failed to switch chain:", error);
+            // If chain switch fails, disconnect to force reconnection
+            disconnect();
+          }
         }
+
+        // Clear RainbowKit cache
+        clearRainbowKitCache();
+      } catch (error) {
+        console.error("Failed to update chain:", error);
+        toast.error("Failed to switch chain. Please try again.");
       }
     }
     onClose();
@@ -44,7 +55,7 @@ export const ChainModal = ({ isOpen, onClose }: ChainModalProps) => {
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-[200]" onClose={onClose}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -71,43 +82,34 @@ export const ChainModal = ({ isOpen, onClose }: ChainModalProps) => {
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 mb-4"
+                  className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Select L2 Chain
+                  Select Chain
                 </Dialog.Title>
-
-                <div className="flex flex-col gap-4">
-                  {L2_CHAINS.map((chain) => (
-                    <button
-                      key={chain.chainId}
-                      onClick={() =>
-                        handleChainSelect(chain.chainId.toString())
-                      }
-                      className={clsx(
-                        "flex items-center gap-2 rounded-xl px-4 py-3 text-left transition-colors",
-                        selectedChainId === chain.chainId.toString()
-                          ? "bg-gray-100"
-                          : "hover:bg-gray-50"
-                      )}
-                    >
-                      <CheckIcon
+                <div className="mt-4">
+                  <div className="flex flex-col gap-2">
+                    {L2_CHAINS.map((chain) => (
+                      <button
+                        key={chain.chainId}
+                        type="button"
                         className={clsx(
-                          "size-5",
-                          selectedChainId === chain.chainId.toString()
-                            ? "text-blue-600"
-                            : "text-transparent"
+                          "flex items-center justify-between rounded-lg px-4 py-2 text-sm font-medium",
+                          selectedChainId === chain.chainId
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700 hover:bg-gray-50"
                         )}
-                      />
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          {chain.name}
+                        onClick={() => handleChainSelect(chain.chainId)}
+                      >
+                        <div className="flex flex-col items-start">
+                          <span>{chain.name}</span>
+                          <span className="text-xs text-gray-500">Chain ID: {chain.chainId}</span>
                         </div>
-                        <div className="text-sm text-gray-500">
-                          Chain ID: {chain.chainId}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+                        {selectedChainId === chain.chainId && (
+                          <CheckIcon className="h-5 w-5" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

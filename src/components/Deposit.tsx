@@ -13,15 +13,17 @@ import { toast } from "react-toastify";
 import { parseEther, formatUnits, parseUnits } from "ethers";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useDisconnect } from "wagmi";
 import { TokenIcon } from "@/components/TokenIcon";
 import { ConnectSolButton } from "@/components/ConnectSolButton";
 import { useChainStore } from "@/store/chainStore";
-import { Toggler } from "./Toggler";
+import { ArrowDown } from "./ArrowDown";
+import { ConnectButton } from "@/components/ConnectButton";
 
 export const Deposit = () => {
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey, signTransaction, disconnect: disconnectSol } = useWallet();
   const { address, isConnected } = useAccount();
+  const { disconnect: disconnectEvm } = useDisconnect();
   const { chainId } = useChainStore();
 
   const { data: solBalance, refetch: loadSolBalance } = useSolBalance({
@@ -170,7 +172,15 @@ export const Deposit = () => {
       <div className="border border-gray p-8 rounded-2xl text-black bg-white h-96 flex flex-col gap-4 justify-between">
         <div className="w-full flex justify-between items-center gap-4">
           <span className="text-base">You&apos;re sending</span>
-          <ConnectSolButton />
+          {publicKey && (
+            <button
+              type="button"
+              className="text-sm text-gray-500 hover:text-black"
+              onClick={() => disconnectSol()}
+            >
+              Disconnect
+            </button>
+          )}
         </div>
 
         <div className="w-full text-center">
@@ -195,11 +205,20 @@ export const Deposit = () => {
         </div>
       </div>
 
-      <Toggler />
+      <ArrowDown />
 
       <div className="border border-gray p-8 rounded-2xl text-black bg-white flex flex-col gap-4 justify-between">
         <div className="w-full flex justify-between items-center gap-4">
-          <span className="text-base">You&apos;re depositing</span>
+          <span className="text-base">You&apos;re receiving</span>
+          {address && (
+            <button
+              type="button"
+              className="text-sm text-gray-500 hover:text-black"
+              onClick={() => disconnectEvm()}
+            >
+              Disconnect
+            </button>
+          )}
         </div>
 
         {recipient && (
@@ -221,14 +240,28 @@ export const Deposit = () => {
         </div>
       </div>
 
-      <button
-        type="button"
-        className="shadow-btn bg-white rounded-full px-7 py-4 cursor-pointer hover:font-semibold w-56 text-black text-center mx-auto mt-6"
-        onClick={handleTransfer}
-        disabled={isProcessing}
-      >
-        {isProcessing ? "Transferring..." : "Transfer"}
-      </button>
+      {publicKey ? (
+        <>
+          {address ? (
+            <button
+              type="button"
+              className="shadow-btn bg-white rounded-full px-7 py-4 cursor-pointer hover:font-semibold w-56 text-black text-center mx-auto mt-6"
+              onClick={handleTransfer}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Transferring..." : "Transfer"}
+            </button>
+          ) : (
+            <div className="mx-auto mt-6">
+              <ConnectButton />
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="mx-auto mt-6">
+          <ConnectSolButton />
+        </div>
+      )}
     </div>
   );
 };

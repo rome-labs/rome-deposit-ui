@@ -1,14 +1,9 @@
 import Image from "next/image";
-
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Deposit } from "@/components/Deposit";
-import { Withdraw } from "@/components/Withdraw";
-import { useAppStore } from "@/store/appStore";
 
 export default function DepositPage() {
-  const { isDeposit } = useAppStore();
-
   return (
     <div className="w-full h-screen px-8 pt-8 font-test">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start container mx-auto relative h-full">
@@ -19,7 +14,7 @@ export default function DepositPage() {
             <Sidebar />
           </div>
 
-          {isDeposit ? <Deposit /> : <Withdraw />}
+          <Deposit />
         </div>
 
         <div className="absolute top-1/4 left-0 right-0 bottom-0 z-[-1]">
@@ -33,4 +28,4 @@ export default function DepositPage() {
       </main>
     </div>
   );
-}
+} 

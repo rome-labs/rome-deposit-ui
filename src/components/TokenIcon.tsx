@@ -1,18 +1,15 @@
-import { Token } from "@/constants/tokens";
 import Image from "next/image";
 
 interface TokenIconProps {
-  token: string | Token;
+  token: string;
   size?: number;
 }
 
 export const TokenIcon = ({ token, size = 24 }: TokenIconProps) => {
-  const symbol = typeof token === "string" ? token : token.symbol;
-  const logoURI =
-    typeof token === "string" ? `/images/tokens/${symbol}.png` : token.logoURI;
+  const logoURI = `/images/tokens/${token}.png`;
 
   if (logoURI) {
-    return <Image src={logoURI} alt={symbol} width={size} height={size} />;
+    return <Image src={logoURI} alt={token} width={size} height={size} />;
   }
 
   return (
@@ -20,7 +17,7 @@ export const TokenIcon = ({ token, size = 24 }: TokenIconProps) => {
       className="flex items-center justify-center bg-gray-200"
       style={{ width: size, height: size }}
     >
-      <span className="text-xs font-medium">{symbol.slice(0, 2)}</span>
+      <span className="text-xs font-medium">{token.slice(0, 2)}</span>
     </div>
   );
 };
